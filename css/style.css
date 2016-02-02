@@ -1,0 +1,19 @@
+* {
+	padding: 0;
+	margin: 0;
+}
+
+.graph-section {
+	display: block;
+	margin: 10px auto;
+	padding: 20px 0;
+	background-color: #EEE;
+	text-align: center;
+	width: 80%;
+	vertical-align: bottom;
+}
+
+.graph-section svg {
+	width: 640px;
+	height: 150px;
+}
