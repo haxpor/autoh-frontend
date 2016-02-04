@@ -22,9 +22,26 @@ function onLoadJSONResource(rawJsonText)
 	// parse raw json text
 	var jsonObj = JSON.parse(rawJsonText);
 
-	addPolyline("autoh", "fill:none;stroke:black;stroke-width:2", jsonObj);
-	addPolyline("indiedevbkk", "fill:none;stroke:red;stroke-width:2", jsonObj);
-	addPolyline("tidbittravel", "fill:none;stroke:#72dec2;stroke-width:2", jsonObj);
+	var styles = new Array();
+	styles[0] = "fill:none;stroke:black;stroke-width:2";
+	styles[1] = "fill:none;stroke:red;stroke-width:2";
+	styles[2] = "fill:none;stroke:#72dec2;stroke-width:2";
+	styles[3] = "fill:none;stroke:#333333;stroke-width:2";
+	styles[4] = "fill:none;stroke:#0000FF;stroke-width:2";
+
+	// show summary for each summary except empty, or 'unknown' project
+	if (jsonObj.Summary.length > 0)
+	{
+		var columnCount = Object.keys(jsonObj.Summary[0]).length;
+		// consider only project name
+		// cut out 'Date', 'Total', and '' in column name
+		for (var i=2; i<columnCount-1; i++)
+		{
+			var columnNames = Object.keys(jsonObj.Summary[0]);
+			alert(columnNames[i]);
+			addPolyline(columnNames[i], styles[i-2], jsonObj);
+		}
+	}
 }
 
 /*
