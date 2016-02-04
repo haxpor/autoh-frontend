@@ -22,6 +22,22 @@ function onLoadJSONResource(rawJsonText)
 	// parse raw json text
 	var jsonObj = JSON.parse(rawJsonText);
 
+	clearSVGSpace();
+	drawLines(jsonObj);
+
+	// when window resizes then we redraw all lines
+	window.onresize = function(event) {
+		clearSVGSpace();
+		drawLines(jsonObj)
+	};
+}
+
+/*
+	Draw all lines for all projects.
+	jsonObj - input parsed json object
+*/
+function drawLines(jsonObj)
+{
 	var styles = new Array();
 	styles[0] = "fill:none;stroke:black;stroke-width:2";
 	styles[1] = "fill:none;stroke:red;stroke-width:2";
@@ -52,20 +68,26 @@ function addPolyline(projectKey, styleText, jsonObj)
 
 	// get element by id='svgroot'
 	var svg = document.getElementById("svgroot");
-	var SCALE_FACTOR_X = 10;
+	var SCALE_FACTOR_X = 2;
 	var SCALE_FACTOR_Y = 10;
 
 	// loop for input project-key
 	var polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
 	var points_string = "";
-	for (var i=0; i<jsonObj.Summary.length; i++)
+
+	var divElement = document.getElementById("div-graph-section");
+	var mapToMin = divElement.offsetLeft;
+	var mapToMax = divElement.offsetWidth + mapToMin;
+
+	// not take into account the final 'Total' row whose 'Date' column is 'Total' in text
+	for (var i=0; i<jsonObj.Summary.length-1; i++)
 	{
 		var date = new Date(jsonObj.Summary[i].Date);
-		if (date.getMonth() <= currentDate.getMonth() &&
-			date.getDate() <= 15 &&
+		if (date.getMonth() <= 11 &&
+			date.getDate() <= 31 &&
 			date.getFullYear() <= currentDate.getFullYear())
 		{
-			points_string += (i*SCALE_FACTOR_X) + "," + (150 - jsonObj.Summary[i][projectKey]*SCALE_FACTOR_Y) + " ";
+			points_string += mapToRange(i, mapToMax, mapToMin, jsonObj.Summary.length-1, 0) + "," + (150 - jsonObj.Summary[i][projectKey]*SCALE_FACTOR_Y) + " ";
 		}
 		else
 		{
@@ -76,4 +98,37 @@ function addPolyline(projectKey, styleText, jsonObj)
 	polyline.setAttribute("points", points_string);
 	polyline.setAttribute("style", styleText);
 	svg.appendChild(polyline);
+}
+
+/*
+	Clear svg space.
+*/
+function clearSVGSpace()
+{
+	// remove all children from svg
+	var svg = document.getElementById("svgroot");
+	removeAllChildrenFrom(svg);
+}
+
+/*
+	Remove all the child from input node.
+*/
+function removeAllChildrenFrom(node)
+{
+	if (node != null)
+	{
+		while (node.firstChild)
+		{
+			node.removeChild(node.firstChild);
+		}
+	}
+}
+
+/*
+	Do a linear mapping from [fromMin, fromMax] to [min, max] with value.
+	Return value in range of [min, max].
+*/
+function mapToRange(value, toMax, toMin, fromMax, fromMin)
+{
+	return (value - fromMin) * (toMax - toMin) / (fromMax - fromMin) + fromMin;
 }
