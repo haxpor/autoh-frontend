@@ -38,7 +38,6 @@ function onLoadJSONResource(rawJsonText)
 		for (var i=2; i<columnCount-1; i++)
 		{
 			var columnNames = Object.keys(jsonObj.Summary[0]);
-			alert(columnNames[i]);
 			addPolyline(columnNames[i], styles[i-2], jsonObj);
 		}
 	}
