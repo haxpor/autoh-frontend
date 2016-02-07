@@ -16,7 +16,7 @@ var jsonConfig = {
 		},
 		{
 			"fill": "none",
-			"stroke": "#72dec2",
+			"stroke": "rgb(229, 215, 80)",
 			"stroke_width": 1,
 			"stroke_dasharray": null,
 			"stroke_linecap": "round"

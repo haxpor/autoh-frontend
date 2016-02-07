@@ -24,17 +24,20 @@ function onLoadJSONResource(rawJsonText)
 
 	clearSVGSpace();
 	drawLines(jsonObj);
+	drawAnnotation(jsonObj);
 
 	// when window resizes then we redraw all lines
 	window.onresize = function(event) {
 		clearSVGSpace();
-		drawLines(jsonObj)
+		drawLines(jsonObj);
+		drawAnnotation(jsonObj);
 	};
 }
 
 /*
 	Draw all lines for all projects.
-	jsonObj - input parsed json object
+	Input
+		jsonObj - input parsed json object
 */
 function drawLines(jsonObj)
 {
@@ -47,7 +50,32 @@ function drawLines(jsonObj)
 		for (var i=2; i<columnCount-1; i++)
 		{
 			var columnNames = Object.keys(jsonObj.Summary[0]);
+
+			// add polyline
 			addPolyline(columnNames[i], getStyleText(jsonConfig.linestyles[i-2]), jsonObj);
+		}
+	}
+}
+
+/*
+	Draw all annotation for all projects.
+	Input
+		jsonObj - input parsed json object
+*/
+function drawAnnotation(jsonObj)
+{
+	if (jsonObj.Summary.length > 0)
+	{
+		var columnCount = Object.keys(jsonObj.Summary[0]).length;
+
+		// consider only project name
+		// cut out 'Date', 'Total', and '' in column name
+		for (var i=2; i<columnCount-1; i++)
+		{
+			var columnNames = Object.keys(jsonObj.Summary[0]);
+
+			// add annotation
+			addAnnotation(columnNames[i], getStyleText(jsonConfig.linestyles[i-2]));
 		}
 	}
 }
@@ -126,6 +154,42 @@ function addPolyline(projectKey, styleText, jsonObj)
 }
 
 /*
+	Add annotation for project with style.
+	Input
+		projectKey - Project name
+		lineStyleText - line css style text
+*/
+function addAnnotation(projectKey, lineStyleText)
+{
+	// create a span tag
+	var span = document.createElement("span");
+	span.setAttribute("class", "span-annotate");
+
+	// create svg tag
+	var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+	// create line tag
+	var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+	line.setAttribute("x1", "0");
+	line.setAttribute("y1", "0");
+	line.setAttribute("x2", "40");
+	line.setAttribute("y2", "0");
+	line.setAttribute("style", lineStyleText);
+	svg.appendChild(line);
+
+	// add svg to span
+	span.appendChild(svg);
+
+	// create a text node
+	var text = document.createTextNode(projectKey);
+	span.appendChild(text);
+
+	// add span to div
+	var div = document.getElementById("div-annotate-section");
+	div.appendChild(span);
+}
+
+/*
 	Clear svg space.
 */
 function clearSVGSpace()
@@ -133,6 +197,10 @@ function clearSVGSpace()
 	// remove all children from svg
 	var svg = document.getElementById("svgroot");
 	removeAllChildrenFrom(svg);
+
+	// remove all children from div
+	var divAnnotate = document.getElementById("div-annotate-section");
+	removeAllChildrenFrom(divAnnotate);
 }
 
 /*
