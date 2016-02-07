@@ -75,24 +75,39 @@ function addPolyline(projectKey, styleText, jsonObj)
 	var polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
 	var points_string = "";
 
-	var divElement = document.getElementById("div-graph-section");
-	var mapToMin = divElement.offsetLeft;
-	var mapToMax = divElement.offsetWidth + mapToMin;
-
-	// not take into account the final 'Total' row whose 'Date' column is 'Total' in text
+	// calculate the number of days to plot graph
+	var numDays = 0;	// this is granularity of zoomness for the graph
 	for (var i=0; i<jsonObj.Summary.length-1; i++)
 	{
 		var date = new Date(jsonObj.Summary[i].Date);
-		if (date.getMonth() <= 11 &&
-			date.getDate() <= 31 &&
+		if (date.getMonth() <= currentDate.getMonth() &&
+			date.getDate() <= currentDate.getDate() &&
 			date.getFullYear() <= currentDate.getFullYear())
 		{
-			points_string += mapToRange(i, mapToMax, mapToMin, jsonObj.Summary.length-1, 0) + "," + (150 - jsonObj.Summary[i][projectKey]*SCALE_FACTOR_Y) + " ";
+			numDays++;	
 		}
 		else
 		{
 			break;
 		}
+	}
+
+	if (numDays < 15)
+		numDays = 15;
+
+	var divElement = document.getElementById("div-graph-section");
+	var mapToMin = divElement.offsetLeft;
+	var mapToMax = divElement.offsetWidth + mapToMin;
+
+	// not take into account the final 'Total' row whose 'Date' column is 'Total' in text
+	for (var i=0; i<numDays; i++)
+	{
+		var date = new Date(jsonObj.Summary[i].Date);
+			
+		var x = mapToRange(i, mapToMax, mapToMin, numDays, 0);
+		var y = (150 - jsonObj.Summary[i][projectKey]*SCALE_FACTOR_Y);
+		
+		points_string += x + "," + y + " ";
 	}
 
 	polyline.setAttribute("points", points_string);
