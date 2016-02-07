@@ -38,13 +38,6 @@ function onLoadJSONResource(rawJsonText)
 */
 function drawLines(jsonObj)
 {
-	var styles = new Array();
-	styles[0] = "fill:none;stroke:black;stroke-width:2";
-	styles[1] = "fill:none;stroke:red;stroke-width:2";
-	styles[2] = "fill:none;stroke:#72dec2;stroke-width:2";
-	styles[3] = "fill:none;stroke:#333333;stroke-width:2";
-	styles[4] = "fill:none;stroke:#0000FF;stroke-width:2";
-
 	// show summary for each summary except empty, or 'unknown' project
 	if (jsonObj.Summary.length > 0)
 	{
@@ -54,9 +47,26 @@ function drawLines(jsonObj)
 		for (var i=2; i<columnCount-1; i++)
 		{
 			var columnNames = Object.keys(jsonObj.Summary[0]);
-			addPolyline(columnNames[i], styles[i-2], jsonObj);
+			addPolyline(columnNames[i], getStyleText(jsonConfig.linestyles[i-2]), jsonObj);
 		}
 	}
+}
+
+/*
+	Form style text from style config json object.
+*/
+function getStyleText(linestyleConfig)
+{
+	var style = "fill:" + linestyleConfig.fill + ";" + 
+			"stroke:" + linestyleConfig.stroke + ";" +
+			"stroke-width:" + linestyleConfig.stroke_width + ";" +
+			"stroke-linecap:" + linestyleConfig.stroke_linecap + ";";
+	if (linestyleConfig.stroke_dasharray != null)
+	{
+		style += "stroke-dasharray:" + linestyleConfig.stroke_dasharray + ";";
+	}
+
+	return style;
 }
 
 /*
