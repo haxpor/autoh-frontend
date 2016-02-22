@@ -1,18 +1,3 @@
-function beginLoadingJSONResource()
-{
-	// get json data from url
-	var xmlhttp = new XMLHttpRequest();
-	var url = 'https://script.googleusercontent.com/macros/echo?user_content_key=2EPeQs2ALuTh1DiatN8jQC1AVXb6wbjJj2yzUqxT2lAHWBoiq6m2Dltcp6X_03k-Fp3zLAiBF3JA0bvcElFESfW8Xm6QJqSaOJmA1Yb3SEsKFZqtv3DaNYcMrmhZHmUMWojr9NvTBuBLhyHCd5hHa1GhPSVukpSQTydEwAEXFXgt_wltjJcH3XHUaaPC1fv5o9XyvOto09QuWI89K6KjOu0SP2F-BdwUi8BrYajeRCIvM4f8D08gXKdc3uhFQTNYuqjhROwSQLTW_MOCXR66UFMbz98LFn415y7FLqOV0Tn7KV_zKQeAAA&lib=MnrE7b2I2PjfH799VodkCPiQjIVyBAxva';
-
-	xmlhttp.onreadystatechange = function() {
-    	if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-        	onLoadJSONResource(xmlhttp.responseText);
-    	}
-	};
-	xmlhttp.open("GET", url, true);
-	xmlhttp.send();
-}
-
 /*
 	Callback function when JSON resoure is loaded.
 	This function receives raw json text as input.
