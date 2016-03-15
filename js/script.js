@@ -31,8 +31,8 @@ function drawLines(jsonObj)
 	{
 		var columnCount = Object.keys(jsonObj.Summary[0]).length;
 		// consider only project name
-		// cut out 'Date', 'Total', and '' in column name
-		for (var i=2; i<columnCount-1; i++)
+		// cut out 'Date', 'Total' in column name
+		for (var i=2; i<columnCount; i++)
 		{
 			var columnNames = Object.keys(jsonObj.Summary[0]);
 
@@ -54,8 +54,8 @@ function drawAnnotation(jsonObj)
 		var columnCount = Object.keys(jsonObj.Summary[0]).length;
 
 		// consider only project name
-		// cut out 'Date', 'Total', and '' in column name
-		for (var i=2; i<columnCount-1; i++)
+		// cut out 'Date', 'Total' in column name
+		for (var i=2; i<columnCount; i++)
 		{
 			var columnNames = Object.keys(jsonObj.Summary[0]);
 
@@ -103,7 +103,12 @@ function addPolyline(projectKey, styleText, jsonObj)
 	for (var i=0; i<jsonObj.Summary.length-1; i++)
 	{
 		var date = new Date(jsonObj.Summary[i].Date);
-		if (date.getMonth() <= currentDate.getMonth() &&
+		if (date.getMonth() < currentDate.getMonth() &&
+			date.getFullYear() <= currentDate.getFullYear())
+		{
+			numDays++;
+		}
+		else if (date.getMonth() == currentDate.getMonth() &&
 			date.getDate() <= currentDate.getDate() &&
 			date.getFullYear() <= currentDate.getFullYear())
 		{

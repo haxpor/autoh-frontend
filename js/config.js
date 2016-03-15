@@ -41,6 +41,13 @@ var jsonConfig = {
 			"stroke_width": 2,
 			"stroke_dasharray": "5,5",
 			"stroke_linecap": "round"
+		},
+		{
+			"fill": "none",
+			"stroke": "rgb(128,100,192)",
+			"stroke_width": 2,
+			"stroke_dasharray": "5,5",
+			"stroke_linecap": "round"
 		}
 	]
 };
